@@ -57,12 +57,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let targetUrl = '';
 
     if (targetPartner === 'buson') {
-      // BUSON: /passagem-de-onibus/sao-paulo-todos-sp/rio-de-janeiro-todos-rj?ida=2026-06-01
-      const finalOrigin = originState ? `${originSlug}-todas-${originState}` : originSlug;
-      const finalDest = destState ? `${destSlug}-todos-${destState}` : destSlug;
+      // BUSON: /passagem-de-onibus/sao-mateus-es/rio-de-janeiro-rj?ida=2026-06-01
+      // Exceções para cidades com múltiplos terminais (Onde a Buson exige todas/todos)
+      const busonMultiTerminals = {
+        'sao-paulo': 'todas',
+        'rio-de-janeiro': 'todos',
+        'belo-horizonte': 'todos',
+        'brasilia': 'todas'
+      };
+
+      const originMulti = busonMultiTerminals[originSlug] ? `-${busonMultiTerminals[originSlug]}` : '';
+      const destMulti = busonMultiTerminals[destSlug] ? `-${busonMultiTerminals[destSlug]}` : '';
+
+      const finalOrigin = originState ? `${originSlug}${originMulti}-${originState}` : originSlug;
+      const finalDest = destState ? `${destSlug}${destMulti}-${destState}` : destSlug;
+      
       targetUrl = `https://www.buson.com.br/passagem-de-onibus/${finalOrigin}/${finalDest}?ida=${date}`;
-      // Placeholder: Se um dia tiver Link da Awin para a Buson, envolver aqui.
-      // Por enquanto, enviamos direto para a Buson para testar a mecânica visual.
       redirectUrl = targetUrl;
       
     } else {
